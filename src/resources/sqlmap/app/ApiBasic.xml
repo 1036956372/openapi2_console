@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ApiBasic">
+
+    <typeAlias alias="dto" type="org.g4studio.core.metatype.impl.BaseDto"/>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	APIID ,
+        	APINAME ,
+        	APIMETHOD ,
+        	APICATEGORY ,
+        	HTTPMETHOD ,
+        	APPKEY ,
+        	APPSECRET ,
+        	RETURNFORMAT ,
+        	SORTNO
+	    ]]>
+	</sql>
+	
+	<!-- 插入一条记录 -->
+    <insert id="saveApiBasic" parameterClass="dto">
+        <!--  -->
+		 <selectKey resultClass="java.lang.Long"  keyProperty="apiid">
+			SELECT SEQ_API_BASIC.nextval AS ID FROM DUAL 
+        </selectKey>
+		
+		
+        INSERT INTO
+         API_BASIC (
+        	APIID ,
+        	APINAME ,
+        	APIMETHOD ,
+        	APICATEGORY ,
+        	HTTPMETHOD ,
+        	APPKEY ,
+        	APPSECRET ,
+        	RETURNFORMAT ,
+        	SORTNO
+        ) VALUES (
+        	#apiid# ,
+        	#apiname# ,
+        	#apimethod# ,
+        	#apicategory# ,
+        	#httpmethod# ,
+        	#appkey# ,
+        	#appsecret# ,
+        	#returnformat# ,
+        	#sortno#
+        )
+   
+    </insert>
+
+    <!-- 根据主键更新代码表 -->
+    <update id="updateApiBasic" parameterClass="dto">
+        UPDATE  API_BASIC 
+        	<dynamic prepend="SET"> 
+	             <isNotNull prepend="," property="apiname">
+	                APINAME = #apiname#
+	             </isNotNull>
+	             <isNotNull prepend="," property="apimethod">
+	                APIMETHOD = #apimethod#
+	             </isNotNull>
+	             <isNotNull prepend="," property="apicategory">
+	                APICATEGORY = #apicategory#
+	             </isNotNull>
+	             <isNotNull prepend="," property="httpmethod">
+	                HTTPMETHOD = #httpmethod#
+	             </isNotNull>
+	             <isNotNull prepend="," property="appkey">
+	                APPKEY = #appkey#
+	             </isNotNull>
+	             <isNotNull prepend="," property="appsecret">
+	                APPSECRET = #appsecret#
+	             </isNotNull>
+	             <isNotNull prepend="," property="returnformat">
+	                RETURNFORMAT = #returnformat#
+	             </isNotNull>
+	             <isNotNull prepend="," property="sortno">
+	                SORTNO = #sortno#
+	             </isNotNull>
+		   </dynamic> 
+        WHERE 
+	        APIID = #apiid# 
+    </update>
+
+    <!-- 删除  -->    
+    <delete id="deleteApiBasic" parameterClass="map">
+    <![CDATA[
+        delete from  API_BASIC where
+        APIID = #apiid# 
+    ]]>
+    </delete>
+    
+    <!-- 根据主键查询代码表 -->
+    <select id="getApiBasicById" parameterClass="map" resultClass="dto" >
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from  API_BASIC 
+	        where 
+		        APIID = #apiid# 
+	    ]]>
+    </select>
+    
+    <!-- 根据唯一索引进行唯一性校验 -->
+    <select id="checkApiBasicByIndex" parameterClass="map" resultClass="java.lang.Integer" >
+	    select count(*) from  API_BASIC 
+	        where 
+		        APIID = #apiid# 
+    </select>
+
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	       <isNotEmpty prepend="AND" property="apiid">
+	             APIID = #apiid#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="apiname">
+	             APINAME = #apiname#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="apimethod">
+	             APIMETHOD = #apimethod#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="apicategory">
+	             APICATEGORY = #apicategory#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="httpmethod">
+	             HTTPMETHOD = #httpmethod#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="appkey">
+	             APPKEY = #appkey#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="appsecret">
+	             APPSECRET = #appsecret#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="returnformat">
+	             RETURNFORMAT = #returnformat#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="sortno">
+	                SORTNO = #sortno#
+	       </isNotEmpty>
+	    </dynamic>	
+	</sql>
+	 
+    <select id="queryApiBasicsForPageCount" parameterClass="map" resultClass="java.lang.Integer">
+        select count(*) from  API_BASIC
+		<include refid="dynamicWhere"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="queryApiBasics" parameterClass="map" resultClass="dto">
+    	select <include refid="commonColumns"/> ,row_number() over(partition by APICATEGORY order by SORTNO ASC)
+    	from  API_BASIC 
+	    <include refid="dynamicWhere"/>    
+    </select>
+
+	
+</sqlMap>

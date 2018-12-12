@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+<typeAlias alias="dto" type="org.g4studio.core.metatype.impl.BaseDto"/>
+
+<insert id="insert" parameterClass="dto">
+	INSERT INTO student
+		(id,name,grade,tel)
+	VALUES
+		(#id#,#name#,#grade#,#tel#)
+</insert>
+<delete id="delete" parameterClass="dto">
+	DELETE FROM student WHERE id=#id#
+</delete>
+
+<sql id="dynamicwhere">
+	<dynamic prepend = "WHERE">
+			<isNotEmpty prepend="AND" property="grade">
+				grade=#grade#
+			</isNotEmpty>
+	</dynamic>
+</sql>
+<update id="update" parameterClass="map">
+	UPDATE student
+	<dynamic prepend="SET">
+		<isNotEmpty prepend="," property="name">
+			name=#name#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="tel">
+			tel=#tel#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="grade">
+			grade=#grade#
+		</isNotEmpty>
+	</dynamic>
+	WHERE id=#id#
+</update>
+
+ <select id="queryStudentsForPageCount" parameterClass="map" resultClass="java.lang.Integer">
+        select count(*) from  API_CATEGORY
+		<include refid="dynamicWhere"/>  
+    </select>
+
+<select id="queryInfo" parameterClass="map" >
+	SELECT id,name,tel,grade FORM student
+		<include refid="dynamicWhere"/>  
+</select>
+</sqlMap>

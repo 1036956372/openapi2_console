@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MornitorNodeApp">
+
+    <typeAlias alias="dto" type="org.g4studio.core.metatype.impl.BaseDto"/>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	APPID ,
+        	APPMSG ,
+        	HOSTID ,
+        	PORT ,
+        	INSTALLPATH ,
+        	LOGPATH ,
+        	APPNAMEID ,
+        	APPSTATE ,
+        	APPENV,
+        	MEMO 
+	    ]]>
+	</sql>
+	
+	<!-- 插入一条记录 -->
+    <insert id="saveMornitorNodeApp" parameterClass="dto">
+        <!--  
+        -->
+		 <selectKey resultClass="java.lang.Long"  keyProperty="appid">
+			SELECT SEQ_MORNITOR_NODE_APP.nextval AS ID FROM DUAL 
+        </selectKey>
+		
+		
+        INSERT INTO
+         MORNITOR_NODE_APP (
+        	APPID ,
+        	APPMSG ,
+        	HOSTID ,
+        	PORT ,
+        	INSTALLPATH ,
+        	LOGPATH ,
+        	APPNAMEID ,
+        	APPSTATE ,
+        	APPENV,
+        	MEMO 
+        ) VALUES (
+        	#appid# ,
+        	#appmsg# ,
+        	#hostid# ,
+        	#port# ,
+        	#installpath# ,
+        	#logpath# ,
+        	#appnameid# ,
+        	#appstate# ,
+        	#appenv# ,
+        	#memo# 
+        )
+   
+    </insert>
+
+    <!-- 根据主键更新代码表 -->
+    <update id="updateMornitorNodeApp" parameterClass="dto">
+        UPDATE  MORNITOR_NODE_APP 
+        	<dynamic prepend="SET"> 
+	             <isNotNull prepend="," property="appmsg">
+	                APPMSG = #appmsg#
+	             </isNotNull>
+	             <isNotNull prepend="," property="hostid">
+	                HOSTID = #hostid#
+	             </isNotNull>
+	             <isNotNull prepend="," property="port">
+	                PORT = #port#
+	             </isNotNull>
+	             <isNotNull prepend="," property="installpath">
+	                INSTALLPATH = #installpath#
+	             </isNotNull>
+	             <isNotNull prepend="," property="logpath">
+	                LOGPATH = #logpath#
+	             </isNotNull>
+	             <isNotNull prepend="," property="appnameid">
+	                APPNAMEID = #appnameid#
+	             </isNotNull>
+	             <isNotNull prepend="," property="appstate">
+	                APPSTATE = #appstate#
+	             </isNotNull>
+	             <isNotNull prepend="," property="appenv">
+	                APPENV = #appenv#
+	             </isNotNull>
+	             <isNotNull prepend="," property="memo">
+	                MEMO = #memo#
+	             </isNotNull>
+		   </dynamic> 
+        WHERE 
+	        APPID = #appid# 
+    </update>
+
+    <!-- 删除  -->    
+    <delete id="deleteMornitorNodeApp" parameterClass="map">
+    <![CDATA[
+        delete from  MORNITOR_NODE_APP where
+        APPID = #appid# 
+    ]]>
+    </delete>
+    
+    <!-- 根据主键查询代码表 -->
+    <select id="getMornitorNodeAppById" parameterClass="map" resultClass="dto" >
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from  MORNITOR_NODE_APP 
+	        where 
+		        APPID = #appid# 
+	    ]]>
+    </select>
+    
+    <!-- 根据唯一索引进行唯一性校验 -->
+    <select id="checkMornitorNodeAppByIndex" parameterClass="map" resultClass="java.lang.Integer" >
+	    select count(*) from  MORNITOR_NODE_APP 
+	        where 
+		        APPID = #appid# 
+    </select>
+
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	       <isNotEmpty prepend="AND" property="appid">
+	             APPID = #appid#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="appmsg">
+	             APPMSG = #appmsg#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="hostid">
+	             HOSTID = #hostid#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="port">
+	             PORT = #port#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="installpath">
+	             INSTALLPATH = #installpath#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="logpath">
+	             LOGPATH = #logpath#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="appnameid">
+	             APPNAMEID = #appnameid#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="appstate">
+	             APPSTATE = #appstate#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="appenv">
+	             APPENV = #appenv#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="memo">
+	             MEMO = #memo#
+	       </isNotEmpty>
+	    </dynamic>	
+	</sql>
+	 
+    <select id="queryMornitorNodeAppsForPageCount" parameterClass="map" resultClass="java.lang.Integer">
+        select count(*) from  MORNITOR_NODE_APP
+		<include refid="dynamicWhere"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="queryMornitorNodeApps" parameterClass="map" resultClass="dto">
+    	select <include refid="commonColumns"/> 
+    	from  MORNITOR_NODE_APP 
+	    <include refid="dynamicWhere"/>    
+    </select>
+
+	
+</sqlMap>

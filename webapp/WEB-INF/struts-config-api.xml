@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+	<!-- 配置ActionFormBean -->
+	<form-beans> 
+		<!-- 公共Form -->  
+		<form-bean name="baseActionForm" type="org.g4studio.common.web.BaseActionForm" />  
+	</form-beans>
+	
+	<!-- 
+  	struts通配符配置,第一个*为{1},第二个*为{2},依次类推,
+  	具体可以查看http://struts.apache.org/1.2.9/userGuide/building_controller.html#action_mapping_wildcards
+
+	 请求路径访问路径 -> 实际调用类      
+	/dfo/stu/Studentinfo/list.ered -> com.wellcom.dfo.moduels.stu.web.StudentinfoAction.list()
+	/dfo/stu/Studentinfo/save.ered -> com.wellcom.dfo.moduels.stu.web.StudentinfoAction.save()
+	/dfo/stu/Studentinfo/update.ered -> com.wellcom.dfo.moduels.stu.web.StudentinfoAction.update()
+	/dfo/stu/Studentinfo/delete.ered -> com.wellcom.dfo.moduels.stu.web.StudentinfoAction.delete()
+	为满足g4框架,唯一不同是以下访问路径
+	/dfo/stu/Studentinfo.ered?reqCode=init ->org.wellcom.dfo.moduels.stu.web.StudentinfoAction.init()
+
+	-->
+	<!--  Action映射   -->
+	<action-mappings type="org.g4studio.core.mvc.xstruts.action.ActionMapping"> 
+	    <!-- 工时管理平台   -->
+		<action path="/*/*"
+			type="com.wellcom.apimng.web.{1}Action"
+			name="baseActionForm" scope="request"
+			validate="false" parameter="{2}" >
+			<forward name="test1View" path="/dfo/sch/test1.jsp" />
+		</action>
+		
+	    <action path="/*"
+			type="com.wellcom.apimng.web.{1}Action"
+			name="baseActionForm" scope="request"
+			validate="false" parameter="reqCode" >
+			<forward name="test1View" path="/dfo/sch/test1.jsp" />
+		</action>
+		<!-- 学生信息系统管理平台 -->
+		<action path="/Students*" 
+			type = "com.wellcom.student.StudentAction"
+			name="baseActionForm" scope="request"
+			validate="false" parameter="reqCode" >
+			<forward name="test1View" path="/dfo/sch/test1.jsp"/></action>
+		
+	  </action-mappings>
+</struts-config>

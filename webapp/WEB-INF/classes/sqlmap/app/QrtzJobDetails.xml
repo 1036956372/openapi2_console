@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="QrtzJobDetails">
+
+    <typeAlias alias="dto" type="org.g4studio.core.metatype.impl.BaseDto"/>
+
+    
+
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	       <isNotEmpty prepend="AND" property="schedName">
+	             SCHED_NAME = #schedName#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="jobName">
+	             JOB_NAME = #jobName#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="jobGroup">
+	             JOB_GROUP = #jobGroup#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="description">
+	             DESCRIPTION = #description#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="jobClassName">
+	             JOB_CLASS_NAME = #jobClassName#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="isDurable">
+	             IS_DURABLE = #isDurable#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="isNonconcurrent">
+	             IS_NONCONCURRENT = #isNonconcurrent#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="isUpdateData">
+	             IS_UPDATE_DATA = #isUpdateData#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="requestsRecovery">
+	             REQUESTS_RECOVERY = #requestsRecovery#
+	       </isNotEmpty>
+	       <isNotEmpty prepend="AND" property="jobData">
+	             JOB_DATA = #jobData#
+	       </isNotEmpty>
+	    </dynamic>	
+	</sql>
+	 
+    <select id="queryQrtzJobDetailssForPageCount" parameterClass="map" resultClass="java.lang.Integer">
+        SELECT count(*) 
+    	FROM QRTZ_TRIGGERS TRIGGERS
+    	INNER JOIN QRTZ_CRON_TRIGGERS CRON_TRIGGERS
+    	ON (CRON_TRIGGERS.TRIGGER_NAME = TRIGGERS.TRIGGER_NAME AND
+    	CRON_TRIGGERS.TRIGGER_GROUP = TRIGGERS.TRIGGER_GROUP)
+    	INNER JOIN QRTZ_JOB_DETAILS JOB_D 
+    	ON (JOB_D.JOB_NAME = TRIGGERS.JOB_NAME AND JOB_D.JOB_GROUP = TRIGGERS.JOB_GROUP)
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="queryQrtzJobDetailss" parameterClass="map" resultClass="dto">
+    	SELECT TRIGGERS.TRIGGER_NAME,
+    	TRIGGERS.TRIGGER_GROUP,
+    	TRIGGERS.JOB_NAME,
+    	TRIGGERS.JOB_GROUP,
+    	JOB_D.DESCRIPTION,
+    	JOB_D.JOB_CLASS_NAME,
+    	CRON_TRIGGERS.CRON_EXPRESSION,
+    	TRIGGERS.TRIGGER_STATE,
+    	TRIGGERS.START_TIME,
+    	TRIGGERS.END_TIME,
+    	TRIGGERS.NEXT_FIRE_TIME,
+    	TRIGGERS.PREV_FIRE_TIME
+    	FROM QRTZ_TRIGGERS TRIGGERS
+    	INNER JOIN QRTZ_CRON_TRIGGERS CRON_TRIGGERS
+    	ON (CRON_TRIGGERS.TRIGGER_NAME = TRIGGERS.TRIGGER_NAME AND
+    	CRON_TRIGGERS.TRIGGER_GROUP = TRIGGERS.TRIGGER_GROUP)
+    	INNER JOIN QRTZ_JOB_DETAILS JOB_D 
+    	ON (JOB_D.JOB_NAME = TRIGGERS.JOB_NAME AND JOB_D.JOB_GROUP = TRIGGERS.JOB_GROUP)
+    	
+    </select>
+
+	
+</sqlMap>
