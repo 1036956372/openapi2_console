@@ -43,7 +43,7 @@
 	</bean>
 	-->
 	
-	<!-- 配置平台层面的qlmapClientFactory -->
+	<!-- 配置平台层面的sqlmapClientFactory -->
 	<bean id="sqlMapClientG4" class="org.g4studio.core.orm.xibatis.support.SqlMapClientFactoryBean">
 		<property name="configLocations">
 			<list>

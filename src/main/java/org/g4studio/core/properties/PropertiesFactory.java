@@ -55,6 +55,16 @@ public class PropertiesFactory {
 			log.error(G4Constants.Exception_Head + "加载属性文件g4server.properties出错!");
 			e1.printStackTrace();
 		}
+		
+		//加载属性文件jdbc.properties
+		try {
+			InputStream is = classLoader.getResourceAsStream("jdbc.properties");
+			PropertiesHelper ph = new PropertiesHelper(is);
+			container.put(PropertiesFile.JDBC, ph);
+		} catch (Exception e1) {
+			log.error(G4Constants.Exception_Head + "加载属性文件jdbc.properties出错!");
+			e1.printStackTrace();
+		}
 	}
 
 	/**

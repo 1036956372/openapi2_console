@@ -73,7 +73,6 @@
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/junit-4.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/jxl.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/log4j-1.2.14.jar"/>
-	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/mysql-connector-java-5.0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/neethi-2.0.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/oro-2.0.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/oscache-2.0.1.jar"/>
@@ -108,6 +107,8 @@
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/fastjson-1.1.39.jar" sourcepath="C:/Users/Administrator/.m2/repository/com/alibaba/fastjson/1.1.39/fastjson-1.1.39-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/DateCenterAPI.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/WEB-INF/lib/wellCloudAPI.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/derbynet.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mysql-connector-java-5.0.5.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/c3p0-0.9.1.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fourinone-3.04.25.jar"/>

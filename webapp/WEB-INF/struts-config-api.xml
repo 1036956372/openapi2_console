@@ -37,11 +37,11 @@
 			<forward name="test1View" path="/dfo/sch/test1.jsp" />
 		</action>
 		<!-- 学生信息系统管理平台 -->
-		<action path="/Students*" 
+	<!-- 	<action path="/Students*" 
 			type = "com.wellcom.student.StudentAction"
 			name="baseActionForm" scope="request"
 			validate="false" parameter="reqCode" >
-			<forward name="test1View" path="/dfo/sch/test1.jsp"/></action>
+			<forward name="test1View" path="/dfo/sch/test1.jsp"/></action> -->
 		
 	  </action-mappings>
 </struts-config>

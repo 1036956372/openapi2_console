@@ -70,7 +70,7 @@
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
 
-	<!-- 请求拦截过滤器 -->
+	<!-- 请求拦截过滤器,在此 -->
 	<filter>
 		<filter-name>requestFilter</filter-name>
 		<filter-class>org.g4studio.common.util.RequestFilter</filter-class>
@@ -83,9 +83,14 @@
 		<filter-name>requestFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>requestFilter</filter-name>
+		<url-pattern>*.mvc</url-pattern>
+	</filter-mapping>
 
 	<!-- 静态资源过滤器:提供压缩和缓存的功能  生产环境下取消注释 -->
-	<filter>
+	<!-- <filter>
 		<filter-name>resourceFilter</filter-name>
 		<filter-class>org.g4studio.core.resource.impl.ResourceFilter</filter-class>
 		<init-param>
@@ -100,7 +105,7 @@
 	<filter-mapping>
 		<filter-name>resourceFilter</filter-name>
 		<url-pattern>*.css</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
     
 
 	<!-- 系统启动监听器 -->
@@ -160,4 +165,45 @@
 		<location>/common/error/500.jsp</location>
 	</error-page>
 	-->
+	
+	
+	
+	
+	<!-- 集成DBExplorer的web.xml -->
+	
+	<context-param>
+		<description>Spring配置文件位置</description>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring-config.xml</param-value>
+	</context-param>
+	
+	<listener>
+		<description>Spring配置加载器</description>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	
+		<listener>
+		<description>DBExplorer监听器</description>
+		<listener-class>
+			qimingx.dbe.web.DBEListener
+		</listener-class>
+	</listener>
+	
+	<servlet>
+		<description>SpringMVC Action</description>
+		<servlet-name>mvc</servlet-name>		<!-- 默认应用会去WEB-INF文件夹下查找对应的[name]-servlet.xml文件，可以添加init-param配置来制定配置文件路径 -->
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>mvc</servlet-name>
+		<url-pattern>*.mvc</url-pattern>
+		</servlet-mapping>
+	
+	
+	
 </web-app>

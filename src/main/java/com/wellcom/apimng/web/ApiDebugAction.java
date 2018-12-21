@@ -111,7 +111,7 @@ public class ApiDebugAction extends BaseAction {
 				System.out.println(httpurl);
 				System.out.println(u1.getHttpmethod()+apicategory);
 				write(WebUtilClientGetRequest(u1,httpurl), response);
-		//		System.out.println("这里若正确返回responceText,若错误返回msg");
+				System.out.println("这里若正确返回responceText,若错误返回msg");
 			}else{
 				String httpurl=getParamValue("HTTP_APP_GATEWAY_URL", request);
 				System.out.println(u1.getHttpmethod()+apicategory);

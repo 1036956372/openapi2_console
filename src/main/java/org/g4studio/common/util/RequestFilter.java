@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.g4studio.common.dao.Dao;
 import org.g4studio.core.metatype.Dto;
 import org.g4studio.core.metatype.impl.BaseDto;
+import org.g4studio.core.orm.xibatis.sqlmap.engine.mapping.sql.dynamic.elements.IsLessEqualTagHandler;
 import org.g4studio.core.properties.PropertiesFactory;
 import org.g4studio.core.properties.PropertiesFile;
 import org.g4studio.core.properties.PropertiesHelper;
@@ -77,21 +78,31 @@ public class RequestFilter implements Filter {
 		PropertiesHelper pHelper = PropertiesFactory.getPropertiesHelper(PropertiesFile.G4);
 		String eventMonitorEnabel = pHelper.getValue("requestMonitor", "1");
 		String isAjax = request.getHeader("x-requested-with");
-		if (G4Utils.isEmpty(userInfo) && !uri.equals("/login.do") && enabled) {
-			if (G4Utils.isEmpty(isAjax)) {
+		if (G4Utils.isEmpty(userInfo) && !uri.equals("/login.do") && enabled) {	//这里enabled默认初始化为true
+			//若session中没有用户登录信息且点击查看数据库时，跳转到登录界面
+			if(uri.endsWith(".mvc")) {
 				response.getWriter().write(
 						"<script type=\"text/javascript\">parent.location.href='" + ctxPath
 								+ "/login.do?reqCode=init'</script>");
 				response.getWriter().flush();
 				response.getWriter().close();
-			} else {
+			}else if (G4Utils.isEmpty(isAjax)) {
+				response.getWriter().write(
+						"<script type=\"text/javascript\">parent.location.href='" + ctxPath
+								+ "/login.do?reqCode=init'</script>");
+				
+				System.out.println(response.toString());
+				response.getWriter().flush();
+				response.getWriter().close();			
+			}
+			else {
 				response.sendError(G4Constants.Ajax_Timeout);
 			}
 			log.warn("警告:非法的URL请求已被成功拦截,请求已被强制重定向到了登录页面.访问来源IP锁定:" + request.getRemoteAddr() + " 试图访问的URL:"
 					+ request.getRequestURL().toString() + "?reqCode=" + request.getParameter("reqCode"));
 			return;
 		}
-		if (G4Utils.isNotEmpty(isAjax) && !uri.equals("/login.do")) {
+		if (G4Utils.isNotEmpty(isAjax) && (!uri.equals("/login.do") && !uri.endsWith(".mvc"))) {
 			String loginuserid = request.getParameter("loginuserid");
 			if (G4Utils.isEmpty(loginuserid)) {
 				response.sendError(G4Constants.Ajax_Unknow);
@@ -139,7 +150,20 @@ public class RequestFilter implements Filter {
 			String msg = userInfo.getUsername() + "[" + userInfo.getAccount() + "]打开了菜单[" + menuname + "]";
 			dto.put("description", msg);
 			log.info(msg);
-		} else {
+		}else if(request.getRequestURI().endsWith(".mvc")){
+			String[] url = request.getRequestURI().split(".");
+			System.out.println(url);
+			/*int methodIndex = url.split("/").length-1;
+			String method = url.split("/")[methodIndex];
+			
+			String msg = userInfo.getUsername() + "[" + userInfo.getAccount()+ "]调用了Action方法["
+					+ method + "]";
+			dto.put("description", msg);
+			log.info(msg);*/
+			
+		} 
+		
+		else {
 			String msg = userInfo.getUsername() + "[" + userInfo.getAccount() + "]调用了Action方法["
 					+ request.getParameter("reqCode") + "]";
 			dto.put("description", msg);

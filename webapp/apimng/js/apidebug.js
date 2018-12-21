@@ -30,7 +30,7 @@ Ext.onReady(function(){
 	    }  
 	});
 	qapilbStore.load();
-	var apibasicStore = new Ext.data.JsonStore({		//加载某个API类型的全部API方法
+	var apibasicStore = new Ext.data.JsonStore({		//加载某个API类型的全部API方法，APIID，
 		url               : './ApiBasic/list.do',
 		root              : 'ROOT',
 		totalProperty     : 'TOTALCOUNT',
@@ -46,7 +46,7 @@ Ext.onReady(function(){
 
 	});
 	
-	var eGridStore = new Ext.data.JsonStore({			//
+	var eGridStore = new Ext.data.JsonStore({			//加载某个API的具体信息，对应表API_BASIC_FIELDS
 		url               : './ApiBasicFields/list.do',		
 		root              : 'ROOT',
 		totalProperty     : 'TOTALCOUNT',
@@ -170,17 +170,17 @@ Ext.onReady(function(){
 		var _state = true ;
 		for(var i =0;i<eGridStore.getCount();i++){
 			var ID = 'ApiBasicFields' + i;
-			if(eGridStore.getAt(i).get('ismust')=='1'){
+			if(eGridStore.getAt(i).get('ismust')=='1'){		//1表示必填
 				_state = false;
 			}else{
 				_state = true ;
 			}
-			var label = eGridStore.getAt(i).get('filedcode');
+			var label = eGridStore.getAt(i).get('filedcode');	//参数名
 			
-			//if语句块搞不懂
+			//若fieldname不为空且与fieldcode不同，则label=fieldname+fieldcode
 			if(eGridStore.getAt(i).get('filedname')!=null&&
 					eGridStore.getAt(i).get('filedname')!=''&&
-					eGridStore.getAt(i).get('filedname')!=eGridStore.getAt(i).get('filedcode')){
+					eGridStore.getAt(i).get('filedname')!=eGridStore.getAt(i).get('filedcode')){		
 						label=eGridStore.getAt(i).get('filedname') + '('+ label + ')';
 			}
 			
@@ -520,7 +520,7 @@ Ext.onReady(function(){
 			url : './ApiDebug/apidebug.do',
 			success : function(response) {
 				var resultArray = Ext.util.JSON
-						.decode(response.responseText);
+						.decode(response.responseText);		//获取不到JSON字符串?Uncaught SyntaxError: Unexpected identifier
 				Ext.getCmp('apirequest').setValue(resultArray.link);
 				Ext.getCmp('apiresponse').setValue(response.responseText);
 				Ext.Msg.alert('提示', response.responseText);

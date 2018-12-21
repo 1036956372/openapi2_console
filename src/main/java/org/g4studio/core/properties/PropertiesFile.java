@@ -20,7 +20,13 @@ public interface PropertiesFile {
 	
 	/**
 	 * Properties文件类型<br>
-	 * 对应global.app.properties属性文件
+	 * 对应g4server.properties属性文件
 	 */
 	public static final String G4SERVER = "g4server";
+
+	/**
+	 * Properties文件类型<br>
+	 * jdbc.properties属性文件
+	 */
+	public static final String JDBC = "jdbc";
 }

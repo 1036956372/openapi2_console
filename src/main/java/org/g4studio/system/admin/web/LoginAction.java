@@ -1,5 +1,7 @@
 package org.g4studio.system.admin.web;
 
+import java.sql.Connection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,13 +16,21 @@ import org.g4studio.core.metatype.impl.BaseDto;
 import org.g4studio.core.mvc.xstruts.action.ActionForm;
 import org.g4studio.core.mvc.xstruts.action.ActionForward;
 import org.g4studio.core.mvc.xstruts.action.ActionMapping;
+import org.g4studio.core.properties.PropertiesFactory;
+import org.g4studio.core.properties.PropertiesFile;
+import org.g4studio.core.properties.PropertiesHelper;
 import org.g4studio.core.util.CodeUtil;
 import org.g4studio.core.util.G4Constants;
 import org.g4studio.core.util.G4Utils;
+import org.g4studio.core.xml.XmlHelper;
 import org.g4studio.system.admin.service.MonitorService;
 import org.g4studio.system.admin.service.OrganizationService;
 import org.g4studio.system.common.dao.vo.UserInfoVo;
 import org.g4studio.system.common.util.idgenerator.IDHelper;
+
+import qimingx.dbe.DBConnectionState;
+import qimingx.dbe.DBEConfig;
+import qimingx.dbe.DBTypeInfo;
 
 /**
  * 登录页面Action
@@ -119,7 +129,30 @@ public class LoginAction extends BaseAction {
 		System.out.println("登录成功");
 		log.info(userInfo.getUsername() + "[" + userInfo.getAccount() + "]" + "成功登录系统!创建了一个有效Session连接,会话ID:["
 				+ request.getSession().getId() + "]" + G4Utils.getCurrentTime());
-		SessionListener.addSession(request.getSession(), userInfo); // 保存有效Session
+		HttpSession session = request.getSession();
+		
+		//向session中添加数据库连接信息,这样在DBExplorer中就不用进行数据库的连接检查了
+		PropertiesHelper pHelper =
+				PropertiesFactory. getPropertiesHelper (PropertiesFile. JDBC );
+		String dbName = null;
+		//判断当前数据库类型，若为mysql,则首字母是m，若为oracle ，则首字母为o
+		
+		switch (pHelper.getValue("g4.jdbc.url").split(":")[1].charAt(0)) {
+		case 'm':
+			dbName="MySQL";
+			break;
+		case 'o':
+			dbName="ORACLE10g";
+			break;
+		default:
+			break;
+		}
+		Connection conn = g4Reader.getConnection();
+		DBConnectionState.connect(dbName, conn, session);
+		
+		SessionListener.addSession(session, userInfo); // 保存有效Session
+		
+		
 		if (g4PHelper.getValue("requestMonitor", "0").equals("1")) {
 			saveLoginEvent(userInfo, request);
 		}
@@ -128,6 +161,7 @@ public class LoginAction extends BaseAction {
 		write(jsonDto.toJson(), response);
 		return mapping.findForward("");
 	}
+	
 	
 	/**
 	 * 回写Cookie

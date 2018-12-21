@@ -11,11 +11,17 @@ import javax.servlet.http.HttpSessionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.g4studio.common.dao.Reader;
+import org.g4studio.common.dao.impl.DaoImpl;
 import org.g4studio.core.metatype.Dto;
 import org.g4studio.core.metatype.impl.BaseDto;
+import org.g4studio.core.server.G4Server;
 import org.g4studio.core.util.G4Utils;
 import org.g4studio.system.admin.service.MonitorService;
 import org.g4studio.system.common.dao.vo.UserInfoVo;
+
+import qimingx.dbe.DBConnectionState;
+import qimingx.dbe.DBEConfig;
+import qimingx.dbe.DBTypeInfo;
 
 /**
  * Session监听器 完成对Seesion会话资源的实时监控
@@ -64,12 +70,14 @@ public class SessionListener implements HttpSessionListener {
 	 * @param session
 	 */
 	static public void addSession(HttpSession session, UserInfoVo userInfo) {
+		
 		ht.put(session.getId(), session);
 		Reader g4Reader = (Reader)SpringBeanLoader.getSpringBean("g4Reader");
 		MonitorService monitorService = (MonitorService)SpringBeanLoader.getSpringBean("monitorService");
 		UserInfoVo usInfo = (UserInfoVo)g4Reader.queryForObject("Monitor.queryHttpSessionsByID", session.getId());
 		if(G4Utils.isEmpty(usInfo)){
 			monitorService.saveHttpSession(userInfo);
+			
 		}
 	}
 
